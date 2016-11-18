@@ -117,7 +117,12 @@ registrationModule.controller("nodoController", function ($scope, $rootScope, lo
         //LQMA
 
         if ($scope.expediente != null) {
-            //Obtengo la información de los nodos            
+            //Obtengo la información de los nodos    
+            //////////BEGIN Agregar por que $rootScope.idProceso=undefined cuando regreso de factura      
+            if($rootScope.idProceso == undefined){
+                $rootScope.idProceso = getParameterByName('proceso');
+            }  
+            //////////END Agregar por que $rootScope.idProceso=undefined cuando regreso de factura
             nodoRepository.getAll($rootScope.folio, $rootScope.idProceso, $rootScope.empleado.idPerfil)
                 .success(obtieneNodosSuccessCallback)
                 .error(errorCallBack);

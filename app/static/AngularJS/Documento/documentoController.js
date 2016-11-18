@@ -94,25 +94,41 @@
                     });*/
 
                 } else {
-                    //Mando a llamar al WebService
-                    documentoRepository.getPdf(doc.tipo, doc.folio, doc.idNodo).then(function(d) {
-                        //Creo la URL
-                        var pdf = URL.createObjectURL(utils.b64toBlob(d.data[0].arrayB, "application/pdf"))
-                        var pdf_link = doc.existeDoc;
+                    ////////////BEGIN Para consumir la ruta donde se sube la NOTA DE CREDITO
+                    if (doc.idDocumento == 10) {
+                        //alertFactory.warning('Noooooo Puede descargar el archivo.');
+                        var pdf_link = doc.existeDoc; //doc.Ruta;
                         var typeAplication = $rootScope.obtieneTypeAplication(pdf_link);
                         var titulo = doc.folio + ' :: ' + doc.descripcion;
-                        //Mando a llamar la URL desde el div sustituyendo el pdf
-                        /////////  $("<object id='pdfDisplay' data='" + pdf + "' width='100%' height='400px' >").appendTo('#pdfContent');
-                        var iframe = '<div id="hideFullContent"><div onclick="nodisponible()" ng-controller="documentoController"> </div> <object id="ifDocument" data="' + pdf + '" type="' + typeAplication + '" width="100%" height="100%"><p>Alternative text - include a link <a href="' + pdf + '">to the PDF!</a></p></object> </div>';
+                        var iframe = '<div id="hideFullContent"><div id="hideFullMenu"> </div><iframe id="ifDocument" src="' + pdf_link + '" frameborder="0"></iframe> </div>';
+                        var iframe = '<div id="hideFullContent"><div id="hideFullMenu" onclick="nodisponible()" ng-controller="documentoController"> </div> <object id="ifDocument" data="' + pdf_link + '" type="' + typeAplication + '" width="100%" height="100%"><p>Alternative text - include a link <a href="' + pdf_link + '">to the PDF!</a></p></object> </div>';
                         $.createModal({
                             title: titulo,
                             message: iframe,
                             closeButton: false,
                             scrollable: false
                         });
-                        /////////$scope.loadingOrder = false; //Animacion
-                    });
-
+                    } else {
+                        //Mando a llamar al WebService
+                        documentoRepository.getPdf(doc.tipo, doc.folio, doc.idNodo).then(function(d) {
+                            //Creo la URL
+                            var pdf = URL.createObjectURL(utils.b64toBlob(d.data[0].arrayB, "application/pdf"))
+                            var pdf_link = doc.existeDoc;
+                            var typeAplication = $rootScope.obtieneTypeAplication(pdf_link);
+                            var titulo = doc.folio + ' :: ' + doc.descripcion;
+                            //Mando a llamar la URL desde el div sustituyendo el pdf
+                            /////////  $("<object id='pdfDisplay' data='" + pdf + "' width='100%' height='400px' >").appendTo('#pdfContent');
+                            var iframe = '<div id="hideFullContent"><div onclick="nodisponible()" ng-controller="documentoController"> </div> <object id="ifDocument" data="' + pdf + '" type="' + typeAplication + '" width="100%" height="100%"><p>Alternative text - include a link <a href="' + pdf + '">to the PDF!</a></p></object> </div>';
+                            $.createModal({
+                                title: titulo,
+                                message: iframe,
+                                closeButton: false,
+                                scrollable: false
+                            });
+                            /////////$scope.loadingOrder = false; //Animacion
+                        });
+                    }
+                    ////////////END Para consumir la ruta donde se sube la NOTA DE CREDITO
                 }
                 //}
             } else {
@@ -353,7 +369,7 @@
 
     $scope.ShowCargar = function(doc) {
         if (doc.idDocumento == 15 && window.location.pathname != '/factura') {
-            location.href = '/factura?id=' + doc.folio + '&employee=' + $rootScope.currentEmployee + '&perfil=' + $rootScope.empleado.idPerfil;
+            location.href = '/factura?id=' + doc.folio + '&employee=' + $rootScope.currentEmployee + '&perfil=' + $rootScope.empleado.idPerfil + '&proceso=' + doc.idProceso;
         } else {
             $('#frameUpload').attr('src', '/uploader');
             $('#modalUpload').modal('show');

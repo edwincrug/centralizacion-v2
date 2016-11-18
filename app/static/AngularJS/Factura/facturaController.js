@@ -157,7 +157,8 @@ registrationModule.controller("facturaController", function($scope, $rootScope,$
     $scope.Regresar = function() {
         //alertFactory.warning('Estoy en Regresar'); 
         if (window.location.pathname == '/factura') {
-            location.href = '/?id=' + $rootScope.currentFolioFactura + '&employee=' + $rootScope.currentEmployee + '&perfil=' + $location.search().perfil;
+            $rootScope.currentidProceso = getParameterByName('proceso');
+            location.href = '/?id=' + $rootScope.currentFolioFactura + '&employee=' + $rootScope.currentEmployee + '&perfil=' + $location.search().perfil+'&proceso='+$rootScope.currentidProceso;
             //location.href = '/?employee=' + $rootScope.currentEmployee ;
         } else {
              alert('Errooooooorrrrrrr');
@@ -264,7 +265,8 @@ registrationModule.controller("facturaController", function($scope, $rootScope,$
                     //contador de seleccionado
                     if (value.seleccionado == true && $scope.contadorSeleccionado == 2) {
                         $scope.documentoSel = value;
-                        if (value.idDocumento == 20 || value.cargar == true) {
+                        /////Se agrego el value.idDocumento == 10 para mostrar la NOTA DE CREDITO
+                        if (value.idDocumento == 20 || value.cargar == true || value.idDocumento == 10 ) {
                             $scope.documentoSel = '<div class="derecha"><div class="css-label radGroup2">' + value.nombreDocumento + '</div><object id="ifDocument" data="' + value.existeDoc + '" type="application/pdf" width="100%"><p>Alternative text - include a link <a href="' + value.existeDoc + '">to the PDF!</a></p></object> </div>';
                             //Muestra el documento
                             $("#divDocumento").append($scope.documentoSel);
@@ -281,7 +283,8 @@ registrationModule.controller("facturaController", function($scope, $rootScope,$
                     } else {
                         if (value.seleccionado == true && $scope.contadorSeleccionado == 1) {
                             $scope.documentoSel = value;
-                            if (value.idDocumento == 20 || value.cargar == true) {
+                            /////Se agrego el value.idDocumento == 10 para mostrar la NOTA DE CREDITO
+                            if (value.idDocumento == 20 || value.cargar == true || value.idDocumento == 10) {
                                 $scope.documentoSel = '<div><div class="css-label radGroup2">' + value.nombreDocumento + '</div><object id="ifDocument" data="' + value.existeDoc + '" type="application/pdf" width="100%"><p>Alternative text - include a link <a href="' + value.existeDoc + '">to the PDF!</a></p></object> </div>';
                                 //Muestra el documento
                                 $("#divDocumento").append($scope.documentoSel);
