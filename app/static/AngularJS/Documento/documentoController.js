@@ -10,6 +10,9 @@
     //Métodos
     $scope.VerDocumento = function(doc) {
         //Inicia el Proceso 1 dependiendo de si eligieron CXP=2 CXC=1
+        //BEGIN Consigo el tipo de proceso para mandarlo al SP que inserta la imagen
+        $scope.idProceso = doc.idProceso;
+        //END Consigo el tipo de proceso para mandarlo al SP que inserta la imagen
         if (doc.idProceso == 1) {
             if (doc.consultar == 1) {
                 //alert(doc.idDocumento);
@@ -118,10 +121,82 @@
         } //Fin de Proceso 1
         //Inicia el Proceso 2
         if (doc.idProceso == 2) {
+            /////////////////////BEGIN Lo que ya tenia para mostrar la factura/////////////////////
+            // if (doc.consultar == 1) {
+            //     pruebaPdf();
 
+            // }
+            /////////////////////END Lo que ya tenia para mostrar la factura/////////////////////
+            /////////////////////BEGIN LOQ UE TENGO QUE MODIFICAR PARA MOSTRAR YA TODO///////////
             if (doc.consultar == 1) {
-                pruebaPdf();
+
+                ///////////////////////////////////////////////////////////////////////////
+                //LMS Agregado para que se consulte y se despliega PDF
+                //Dependiendo del nodo es el tipo de Documento OCO,OCA
+                ///////////////////////////////////////////////////////////////////////////
+                if (doc.idDocumento == 20 || doc.cargar == 1) {
+                    //Si es cargable o 20                  
+
+                    if (doc.descargar == 1) {
+                        //alertFactory.warning('Puede descargar el archivo.');
+                        var pdf_link = doc.existeDoc; //doc.Ruta;
+                        var typeAplication = $rootScope.obtieneTypeAplication(pdf_link);
+                        var titulo = doc.folio + ' :: ' + doc.descripcion;
+                        var iframe = '<div id="hideFullContent"><iframe id="ifDocument" src="' + pdf_link + '" frameborder="0"></iframe> </div>';
+                        var iframe = '<div id="hideFullContent"><div onclick="nodisponible()" ng-controller="documentoController"> </div> <object id="ifDocument" data="' + pdf_link + '" type="' + typeAplication + '" width="100%" height="100%"><p>Alternative text - include a link <a href="' + pdf_link + '">to the PDF!</a></p></object> </div>';
+                        $.createModal({
+                            title: titulo,
+                            message: iframe,
+                            closeButton: false,
+                            scrollable: false
+                        });
+                    } else {
+                        //alertFactory.warning('Noooooo Puede descargar el archivo.');
+                        var pdf_link = doc.existeDoc; //doc.Ruta;
+                        var typeAplication = $rootScope.obtieneTypeAplication(pdf_link);
+                        var titulo = doc.folio + ' :: ' + doc.descripcion;
+                        var iframe = '<div id="hideFullContent"><div id="hideFullMenu"> </div><iframe id="ifDocument" src="' + pdf_link + '" frameborder="0"></iframe> </div>';
+                        var iframe = '<div id="hideFullContent"><div id="hideFullMenu" onclick="nodisponible()" ng-controller="documentoController"> </div> <object id="ifDocument" data="' + pdf_link + '" type="' + typeAplication + '" width="100%" height="100%"><p>Alternative text - include a link <a href="' + pdf_link + '">to the PDF!</a></p></object> </div>';
+                        $.createModal({
+                            title: titulo,
+                            message: iframe,
+                            closeButton: false,
+                            scrollable: false
+                        });
+                    }
+
+
+
+                } else {
+                    if (doc.idDocumento == 35) {
+                        pruebaPdf();
+                    } else {
+                        //Mando a llamar al WebService
+                        documentoRepository.getPdf(doc.tipo, doc.folio, 0).then(function(d) {
+                            //Creo la URL
+                            var pdf = URL.createObjectURL(utils.b64toBlob(d.data[0].arrayB, "application/pdf"))
+                            var pdf_link = pdf;
+                            var typeAplication = $rootScope.obtieneTypeAplication(pdf_link);
+                            var titulo = doc.folio + ' :: ' + doc.descripcion;
+                            //Mando a llamar la URL desde el div sustituyendo el pdf
+                            /////////  $("<object id='pdfDisplay' data='" + pdf + "' width='100%' height='400px' >").appendTo('#pdfContent');
+                            var iframe = '<div id="hideFullContent"><div onclick="nodisponible()" ng-controller="documentoController"> </div> <object id="ifDocument" data="' + pdf + '" type="' + typeAplication + '" width="100%" height="100%"><p>Alternative text - include a link <a href="' + pdf + '">to the PDF!</a></p></object> </div>';
+                            $.createModal({
+                                title: titulo,
+                                message: iframe,
+                                closeButton: false,
+                                scrollable: false
+                            });
+                            /////////$scope.loadingOrder = false; //Animacion
+                        });
+                    }
+                }
+                //}
+            } else {
+                alertFactory.warning('Acción no permitida para su perfil.');
             }
+            /////////////////////END  LOQ UE TENGO QUE MODIFICAR PARA MOSTRAR YA TODO///////////
+
         } //Fin de Proceso 2
 
 
@@ -129,12 +204,12 @@
 
     //Mandamos a llamar el repository para conseguir la Factura 
     var pruebaPdf = function() {
-        documentoRepository.pruebaPdf()
-            .success(pruebaPdfSuccessCallback)
-            .error(errorCallBack);
+            documentoRepository.pruebaPdf()
+                .success(pruebaPdfSuccessCallback)
+                .error(errorCallBack);
 
-    }
-    //Aqui es donde se muestra el pdf 
+        }
+        //Aqui es donde se muestra el pdf 
     var pruebaPdfSuccessCallback = function(data) {
         //console.log('si entre ');
 
@@ -145,7 +220,7 @@
                 //var pdf2=pdf.split('blob:');
             var iframe = '<div id="hideFullContent"><div onclick="nodisponible()" ng-controller="documentoController"> </div> <object id="ifDocument" data="' + pdf + '" type="application/pdf" width="100%" height="100%"><p>Alternative text - include a link <a href="' + pdf + '">to the PDF!</a></p></object> </div>';
             $.createModal({
-                title: 'FACTURA',
+                title: 'NOTA DE CREDITO',
                 message: iframe,
                 closeButton: false,
                 scrollable: false
@@ -301,7 +376,7 @@
         alertFactory.success('Se guardo el documento ' + name);
         var doc = $rootScope.currentUpload;
 
-        documentoRepository.saveDocument(doc.folio, doc.idDocumento, 1, 1, doc.idNodo, 1, global_settings.uploadPath + '/' + name)
+        documentoRepository.saveDocument(doc.folio, doc.idDocumento, 1, $scope.idProceso, doc.idNodo, 1, global_settings.uploadPath + '/' + name)
             .success(saveDocumentSuccessCallback)
             .error(errorCallBack);
     };

@@ -97,6 +97,7 @@
         <a ng-click="setPage(nodo)" tooltip="{{ nodo.nombre + ( nodo.enabled == 0 ? ' (No disponible para su perfil)' : '') }}" ng-class="{ 'cerrado': nodo.estatus != 1 && nodo.active != 1 && idProceso==1,'activoC':nodo.estatus != 1 && nodo.active != 1 && idProceso==2, 'nodoDisabled': nodo.enabled == 0 }" class="anavigatorNode">{{ nodo.id }}</a></li>
         <li><a class="next anavigatorNode" tooltip="Siguiente Nodo"><span aria-hidden="true">»</span></a></li>
       </ul>
+      <p ng-show="idProceso==2" class="etiqueta">Tipo de venta : {{expediente.nombreTipoVenta}}</p>
     </nav>
   </div>
   <hr />
