@@ -21,7 +21,7 @@ registrationModule.controller("facturaController", function($scope, $rootScope,$
         $scope.respuesta = {
             opcion: '1'
         };
-
+        $rootScope.currentidProceso = getParameterByName('proceso');
     };
 
     var getFolio = function() {
@@ -97,7 +97,7 @@ registrationModule.controller("facturaController", function($scope, $rootScope,$
                 //$scope.documento = data;
                 //$scope.documentoIni = '<div><object id="ifDocument" data="' + data + '" type="application/pdf" width="100%"><p>Alternative text - include a link <a href="' + data + '">to the PDF!</a></p></object> </div>';
 
-                documentoRepository.getPdf('OCO', $rootScope.currentFolioFactura, 1).then(function(d) {
+                documentoRepository.getPdf('OCO', $rootScope.currentFolioFactura, 7).then(function(d) {
                     //Creo la URL
                     var pdf = URL.createObjectURL(utils.b64toBlob(d.data[0].arrayB, "application/pdf"))
                     $scope.documentoIni = '<div><div class="css-label radGroup2">ORDEN DE COMPRA</div><object id="ifDocument" data="' + pdf + '" type="application/pdf" width="100%"><p>Alternative text - include a link <a href="' + pdf + '">to the PDF!</a></p></object> </div>';
@@ -157,7 +157,7 @@ registrationModule.controller("facturaController", function($scope, $rootScope,$
     $scope.Regresar = function() {
         //alertFactory.warning('Estoy en Regresar'); 
         if (window.location.pathname == '/factura') {
-            $rootScope.currentidProceso = getParameterByName('proceso');
+            
             location.href = '/?id=' + $rootScope.currentFolioFactura + '&employee=' + $rootScope.currentEmployee + '&perfil=' + $location.search().perfil+'&proceso='+$rootScope.currentidProceso;
             //location.href = '/?employee=' + $rootScope.currentEmployee ;
         } else {
@@ -222,7 +222,9 @@ registrationModule.controller("facturaController", function($scope, $rootScope,$
     $rootScope.cierraVentana = function() {
         //alertFactory.success('Que tenga buen día');
         //setTimeout(function(){window.close();},2500);
-        setTimeout(function() { window.location.href = 'http://' + location.host + '/?id=' + $rootScope.currentFolioFactura + '&employee=' + $rootScope.currentEmployee; }, 2500);
+        //setTimeout(function() { window.location.href = 'http://' + location.host + '/?id=' + $rootScope.currentFolioFactura + '&employee=' + $rootScope.currentEmployee; }, 2500);
+        setTimeout(function() { location.href = '/?id=' + $rootScope.currentFolioFactura + '&employee=' + $rootScope.currentEmployee + '&perfil=' + $location.search().perfil+'&proceso='+$rootScope.currentidProceso; }, 2500);
+        
     };
 
 

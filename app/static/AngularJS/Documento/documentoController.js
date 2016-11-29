@@ -392,7 +392,7 @@
         alertFactory.success('Se guardo el documento ' + name);
         var doc = $rootScope.currentUpload;
 
-        documentoRepository.saveDocument(doc.folio, doc.idDocumento, 1, $scope.idProceso, doc.idNodo, 1, global_settings.uploadPath + '/' + name)
+        documentoRepository.saveDocument(doc.folio, doc.idDocumento, 1, doc.idProceso, doc.idNodo, 1, global_settings.uploadPath + '/' + name)
             .success(saveDocumentSuccessCallback)
             .error(errorCallBack);
     };

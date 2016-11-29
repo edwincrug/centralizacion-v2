@@ -60,6 +60,14 @@
 <div class="texto">
  {{ expediente.fechaUltimoMovimiento }}
 </div>
+<!--BEGIN Para mostrar el tipo de venta  -->
+<div class="etiqueta" ng-show="idProceso==2">
+  Tipo de venta:
+</div>
+<div class="textodos" ng-show="idProceso==2">
+ {{expediente.nombreTipoVenta}}
+</div>
+<!--END Para mostrar el ripo de venta  -->
 </div>
 </section>
 <section id="navigator">
@@ -96,8 +104,7 @@
         <li ng-repeat="nodo in listaNodos" ng-class="{ 'active': nodo.active == 1 , 'disabled': nodo.enabled == 0 }">
         <a ng-click="setPage(nodo)" tooltip="{{ nodo.nombre + ( nodo.enabled == 0 ? ' (No disponible para su perfil)' : '') }}" ng-class="{ 'cerrado': nodo.estatus != 1 && nodo.active != 1 && idProceso==1,'activoC':nodo.estatus != 1 && nodo.active != 1 && idProceso==2, 'nodoDisabled': nodo.enabled == 0 }" class="anavigatorNode">{{ nodo.id }}</a></li>
         <li><a class="next anavigatorNode" tooltip="Siguiente Nodo"><span aria-hidden="true">»</span></a></li>
-      </ul>
-      <p ng-show="idProceso==2" class="etiqueta">Tipo de venta : {{expediente.nombreTipoVenta}}</p>
+      </ul>      
     </nav>
   </div>
   <hr />
@@ -127,9 +134,9 @@
 <section id="detail" ng-show="!isLoading" ng-hide="currentNode.estatus == 1">
   <div class="row linea">
     <div class="col-sm-7">
-      <h4>Contenido del NODO {{ currentNode.id }} <span class="label label-default">{{ listaDocumentos.length }}</span></h4>
+      <h4>Contenido del NODO {{ currentNode.id }} <span class="label label-default">{{((listaDocumentos[3].existeDoc == '' && listaDocumentos[3].idDocumento == 10) || (listaDocumentos[3].existeDoc == null && listaDocumentos[3].idDocumento == 10)) ? (listaDocumentos.length -1) : listaDocumentos.length}}</span></h4>
       <div class="list-group" id="viewerDocs" ng-controller="documentoController">
-        <div class="list-group-item" ng-repeat="documento in listaDocumentos" ng-class="{ 'disabled':  documento.consultar == 0, 'noExiste': documento.existeDoc == '' }" tooltip="{{( documento.consultar == 0 ? 'No disponible para su perfil' : '' )}}">
+        <div class="list-group-item" ng-repeat="documento in listaDocumentos" ng-class="{ 'disabled':  documento.consultar == 0, 'noExiste': documento.existeDoc == '' }" tooltip="{{( documento.consultar == 0 ? 'No disponible para su perfil' : '' )}}" ng-hide="(documento.existeDoc == '' && documento.idDocumento==10) || (documento.existeDoc == null && documento.idDocumento==10)">
           <strong> {{ documento.nombreDocumento }}</strong> {{ documento.descripcion }}
           <div class="botoneraDocumento">
             <button type="button" class="btn btn-primary btn-xs" tooltip="{{ documento.consultar == 1 ? 'Ver documento' : 'No puede realizar está acción' }}" ng-class="{ 'disabled': documento.consultar != 1 }" ng-click="VerDocumento(documento)"
