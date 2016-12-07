@@ -75,7 +75,16 @@ registrationModule.controller("facturaController", function($scope, $rootScope,$
     //LMS 09/05/2016 Success de obtener todos los documentos del Nodo 7
     var getByNodoSuccessCallback = function(data, status, headers, config) {
         if (data != null) {
-            $scope.listaDocumentos = data;
+            $scope.resultado = [];
+            angular.forEach(data, function(value, key) {
+                if (value.idDocumento == 10 && (value.existeDoc == '' || value.existeDoc == null)) {
+
+                } else {
+                    $scope.resultado[key] = value;
+                }
+            });
+
+            $scope.listaDocumentos = $scope.resultado;
 
 
         ////LMS

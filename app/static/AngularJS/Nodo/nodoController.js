@@ -365,7 +365,16 @@ registrationModule.controller("nodoController", function ($scope, $rootScope, lo
 
     //Success de obtner documentos por nodo
     var getDocumentosSuccessCallback = function (data, status, headers, config) {
-        $scope.listaDocumentos = data;
+        $scope.resultado=[];
+        angular.forEach(data, function (value, key) {
+            if(value.idDocumento==10 && (value.existeDoc=='' || value.existeDoc==null)){
+
+            }else{
+                $scope.resultado[key]=value;
+            }
+        });       
+
+        $scope.listaDocumentos = $scope.resultado;
         alertaRepository.getByNodo($scope.idProceso, $scope.currentNode.id, $scope.currentNode.folio)
             .success(getAlertasSuccessCallback)
             .error(errorCallBack);

@@ -31,7 +31,7 @@ registrationModule.controller("searchController", function($scope, $rootScope, $
         //alert($scope.dt1);
 
         //LQMA 21012016 se agrego funcionalidad de busqueda de folios    $rootScope.division == null && 
-        if ($rootScope.empresa == null && $rootScope.agencia == null && $rootScope.departamento == null && ($scope.folioBusca == null || $scope.folioBusca == '') && $rootScope.proveedor == null && $rootScope.tipo == null && $scope.dt1 == null && $scope.dt2 == null) {
+        if ($rootScope.empresa == null && $rootScope.agencia == null && $rootScope.departamento == null && ($scope.folioBusca == null || $scope.folioBusca == '') && $rootScope.proveedor == null && $rootScope.tipo == null && $scope.dt1 == null && $scope.dt2 == null && $rootScope.tipoProceso == null) {
             alertFactory.warning('Debe proporcionar al menos alguno de los filtros de busqueda.');
         } else {
 

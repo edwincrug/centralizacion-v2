@@ -184,8 +184,25 @@
 
 
                 } else {
-                    if (doc.idDocumento == 35) {
-                        pruebaPdf();
+                    if (doc.idDocumento == 35 || doc.idDocumento == 27) {
+                        //pruebaPdf();
+                        documentoRepository.pruebaPdf().then(function(d) {
+                            if (d.data.mensajeresultadoField == "") {
+                                var pdf = URL.createObjectURL(utils.b64toBlob(d.data.pdfField, "application/pdf"))
+                                    //var typeAplication = $rootScope.obtieneTypeAplication(pdf_link);
+                                console.log(pdf)
+                                    //var pdf2=pdf.split('blob:');
+                                var iframe = '<div id="hideFullContent"><div onclick="nodisponible()" ng-controller="documentoController"> </div> <object id="ifDocument" data="' + pdf + '" type="application/pdf" width="100%" height="100%"><p>Alternative text - include a link <a href="' + pdf + '">to the PDF!</a></p></object> </div>';
+                                $.createModal({
+                                    title: doc.folio + ' :: ' + doc.descripcion,
+                                    message: iframe,
+                                    closeButton: false,
+                                    scrollable: false
+                                });
+                            } else {
+                                $("<h2 class='filesInvoce'>" + d.data.mensajeresultadoField + "</h2>").appendTo('#myModal');
+                            }
+                        });
                     } else {
                         //Mando a llamar al WebService
                         documentoRepository.getPdf(doc.tipo, doc.folio, 0).then(function(d) {

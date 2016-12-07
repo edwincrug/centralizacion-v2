@@ -21,7 +21,7 @@
                 <div class="col-md-6">
                     <br>
                     <h4><strong>Documentos disponibles</strong></h4> 
-                    <div class="input-group" ng-repeat="documento in listaDocumentos" ng-hide="(documento.existeDoc == '' && documento.idDocumento==10) || (documento.existeDoc == null && documento.idDocumento==10)"> <span class="input-group-addon"> <input type="checkbox" ng-model="documento.seleccionado" ng-change="SeleccionaDocumento(documento)" aria-label="Checkbox for following text input"> </span> <input ng-model="documento.nombreDocumento" type="text" class="form-control" aria-label="Text input with checkbox">  
+                    <div class="input-group" ng-repeat="documento in listaDocumentos"> <span class="input-group-addon"> <input type="checkbox" ng-model="documento.seleccionado" ng-change="SeleccionaDocumento(documento)" aria-label="Checkbox for following text input"> </span> <input ng-model="documento.nombreDocumento" type="text" class="form-control" aria-label="Text input with checkbox">  
                     </div>
                 </div>
             </div>  
