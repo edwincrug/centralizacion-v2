@@ -30,8 +30,8 @@ registrationModule.factory('documentoRepository', function ($http) {
                 params: { id: '3|' + folio + '|' + iddocumento + '|' + idperfil + '|' + idproceso + '|' + idnodo + '|' + idusuario + '|' + ruta }
             });
         },
-        pruebaPdf: function () {
-            return $http.get(documentoUrl + '4');
+        getPdfWS: function (rfcemisor,rfcreceptor,serie,folio) {
+            return $http.get(documentoUrl + '4|' + rfcemisor + '|' + rfcreceptor + '|' + serie + '|' +folio);
         }
     };
 });

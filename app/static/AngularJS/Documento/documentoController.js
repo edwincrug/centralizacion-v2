@@ -1,4 +1,4 @@
-﻿registrationModule.controller("documentoController", function($scope, $rootScope, utils, localStorageService, alertFactory, documentoRepository) {
+﻿registrationModule.controller("documentoController", function($scope, $rootScope, utils, localStorageService, alertFactory, documentoRepository, facturaRepository) {
 
     //Propiedades
     //Desconfiguramos el clic izquierdo en el frame contenedor de documento
@@ -186,23 +186,76 @@
                 } else {
                     if (doc.idDocumento == 35 || doc.idDocumento == 27) {
                         //pruebaPdf();
-                        documentoRepository.pruebaPdf().then(function(d) {
-                            if (d.data.mensajeresultadoField == "") {
-                                var pdf = URL.createObjectURL(utils.b64toBlob(d.data.pdfField, "application/pdf"))
-                                    //var typeAplication = $rootScope.obtieneTypeAplication(pdf_link);
-                                console.log(pdf)
-                                    //var pdf2=pdf.split('blob:');
-                                var iframe = '<div id="hideFullContent"><div onclick="nodisponible()" ng-controller="documentoController"> </div> <object id="ifDocument" data="' + pdf + '" type="application/pdf" width="100%" height="100%"><p>Alternative text - include a link <a href="' + pdf + '">to the PDF!</a></p></object> </div>';
-                                $.createModal({
-                                    title: doc.folio + ' :: ' + doc.descripcion,
-                                    message: iframe,
-                                    closeButton: false,
-                                    scrollable: false
+                        if (doc.idDocumento == 27) {
+                            facturaRepository.getInfFact(doc.folio).then(function(cotizacion) {
+                                //console.log(cotizacion);
+                                pdfWS(cotizacion.data[0].rfcEmisor, '', cotizacion.data[0].serie, cotizacion.data[0].folio);
+                            });
+                        } else if (doc.idDocumento == 35) {
+                            $scope.pdf = [];
+                            facturaRepository.getInfNotaCredito(doc.folio).then(function(notacredito) {
+                                var iframe = '<div id="hideFullContent"><div><ul class="nav nav-tabs"> ';
+
+                                angular.forEach(notacredito.data, function(value, key) {
+                                    if (key == 0) {
+                                        iframe = iframe + '<li class="active"><a data-toggle="tab" href="#divMenu' + key + '" target="_self">Nota de Credito ' + (key + 1) + ' </a></li>';
+                                    } else {
+                                        iframe = iframe + '<li><a data-toggle="tab" href="#divMenu' + key + '" target="_self">Nota de Credito ' + (key + 1) + ' </a></li>';
+                                    }
                                 });
-                            } else {
-                                $("<h2 class='filesInvoce'>" + d.data.mensajeresultadoField + "</h2>").appendTo('#myModal');
-                            }
-                        });
+
+                                iframe = iframe + '</ul></div> <div class="tab-content">';
+
+                                angular.forEach(notacredito.data, function(value, key) {
+                                    documentoRepository.getPdfWS(value.rfcEmisor, '', value.serie, value.folio).then(function(d) {
+                                        if (d.data.mensajeresultadoField == "") {
+                                            $scope.pdf[key] = URL.createObjectURL(utils.b64toBlob(d.data.pdfField, "application/pdf"))
+                                            if (key == notacredito.data.length - 1) {
+                                                angular.forEach($scope.pdf, function(value, key) {
+                                                    if (key == 0) {
+                                                        iframe = iframe + '<div class="tab-pane active" id="divMenu' + key + '"><iframe src="' + value + '" width="560" height="350" allowfullscreen="allowFullScreen"></iframe></div>';
+                                                    } else {
+                                                        iframe = iframe + '<div class="tab-pane" id="divMenu' + key + '"><iframe src="' + value + '" width="560" height="350" allowfullscreen="allowFullScreen"></iframe></div>';
+                                                    }
+                                                });
+                                                iframe = iframe + '</div></div>';
+
+                                                $.createModal({
+                                                    title: doc.folio + ' :: ' + doc.descripcion, //titulo,
+                                                    message: iframe,
+                                                    closeButton: false,
+                                                    scrollable: false
+                                                });
+                                            }
+                                        }
+                                    });
+                                });
+                                //console.log(notacredito);
+                                //pdfWS(notacredito.data.rfcEmisor, '', notacredito.data.serie, notacredito.data.folio);
+                            });
+                        }
+
+                        var pdfWS = function(rfcemisor, rfcreceptor, serie, folio) {
+                            documentoRepository.getPdfWS(rfcemisor, rfcreceptor, serie, folio).then(function(d) {
+                                if (d.data.mensajeresultadoField == "") {
+                                    var pdf = URL.createObjectURL(utils.b64toBlob(d.data.pdfField, "application/pdf"))
+                                        //var typeAplication = $rootScope.obtieneTypeAplication(pdf_link);
+                                    console.log(pdf)
+                                        //var pdf2=pdf.split('blob:');
+                                    var iframe = '<div id="hideFullContent"><div onclick="nodisponible()" ng-controller="documentoController"> </div> <object id="ifDocument" data="' + pdf + '" type="application/pdf" width="100%" height="100%"><p>Alternative text - include a link <a href="' + pdf + '">to the PDF!</a></p></object> </div>';
+                                    $.createModal({
+                                        title: doc.folio + ' :: ' + doc.descripcion,
+                                        message: iframe,
+                                        closeButton: false,
+                                        scrollable: false
+                                    });
+                                } else {
+                                    $("<h2 class='filesInvoce'>" + d.data.mensajeresultadoField + "</h2>").appendTo('#myModal');
+                                }
+                            });
+
+                        }
+
                     } else {
                         //Mando a llamar al WebService
                         documentoRepository.getPdf(doc.tipo, doc.folio, 0).then(function(d) {
@@ -231,40 +284,7 @@
             /////////////////////END  LOQ UE TENGO QUE MODIFICAR PARA MOSTRAR YA TODO///////////
 
         } //Fin de Proceso 2
-
-
     };
-
-    //Mandamos a llamar el repository para conseguir la Factura 
-    var pruebaPdf = function() {
-            documentoRepository.pruebaPdf()
-                .success(pruebaPdfSuccessCallback)
-                .error(errorCallBack);
-
-        }
-        //Aqui es donde se muestra el pdf 
-    var pruebaPdfSuccessCallback = function(data) {
-        //console.log('si entre ');
-
-        if (data.mensajeresultadoField == "") {
-            var pdf = URL.createObjectURL(utils.b64toBlob(data.pdfField, "application/pdf"))
-                //var typeAplication = $rootScope.obtieneTypeAplication(pdf_link);
-            console.log(pdf)
-                //var pdf2=pdf.split('blob:');
-            var iframe = '<div id="hideFullContent"><div onclick="nodisponible()" ng-controller="documentoController"> </div> <object id="ifDocument" data="' + pdf + '" type="application/pdf" width="100%" height="100%"><p>Alternative text - include a link <a href="' + pdf + '">to the PDF!</a></p></object> </div>';
-            $.createModal({
-                title: 'NOTA DE CREDITO',
-                message: iframe,
-                closeButton: false,
-                scrollable: false
-            });
-        } else {
-            $("<h2 class='filesInvoce'>" + data.mensajeresultadoField + "</h2>").appendTo('#myModal');
-        }
-
-
-
-    }
 
     $rootScope.obtieneTypeAplication = function(ruta) {
 
