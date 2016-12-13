@@ -198,9 +198,9 @@
 
                                 angular.forEach(notacredito.data, function(value, key) {
                                     if (key == 0) {
-                                        iframe = iframe + '<li class="active"><a data-toggle="tab" href="#divMenu' + key + '" target="_self">Nota de Credito ' + (key + 1) + ' </a></li>';
+                                        iframe = iframe + '<li class="active"><a data-toggle="tab" href="#divMenu' + key + '" target="_self"> ' + doc.descripcion + ' ' + (key + 1) + ' </a></li>';
                                     } else {
-                                        iframe = iframe + '<li><a data-toggle="tab" href="#divMenu' + key + '" target="_self">Nota de Credito ' + (key + 1) + ' </a></li>';
+                                        iframe = iframe + '<li><a data-toggle="tab" href="#divMenu' + key + '" target="_self"> ' + doc.descripcion + ' ' + (key + 1) + ' </a></li>';
                                     }
                                 });
 
@@ -210,23 +210,26 @@
                                     documentoRepository.getPdfWS(value.rfcEmisor, '', value.serie, value.folio).then(function(d) {
                                         if (d.data.mensajeresultadoField == "") {
                                             $scope.pdf[key] = URL.createObjectURL(utils.b64toBlob(d.data.pdfField, "application/pdf"))
-                                            if (key == notacredito.data.length - 1) {
-                                                angular.forEach($scope.pdf, function(value, key) {
-                                                    if (key == 0) {
-                                                        iframe = iframe + '<div class="tab-pane active" id="divMenu' + key + '"><iframe src="' + value + '" width="560" height="350" allowfullscreen="allowFullScreen"></iframe></div>';
-                                                    } else {
-                                                        iframe = iframe + '<div class="tab-pane" id="divMenu' + key + '"><iframe src="' + value + '" width="560" height="350" allowfullscreen="allowFullScreen"></iframe></div>';
-                                                    }
-                                                });
-                                                iframe = iframe + '</div></div>';
 
-                                                $.createModal({
-                                                    title: doc.folio + ' :: ' + doc.descripcion, //titulo,
-                                                    message: iframe,
-                                                    closeButton: false,
-                                                    scrollable: false
-                                                });
-                                            }
+                                            setTimeout(function() { //Para poder  visualizar los pdf
+                                                if (key == notacredito.data.length - 1) {
+
+                                                    angular.forEach($scope.pdf, function(value, key) {
+                                                        if (key == 0) {
+                                                            iframe = iframe + '<div class="tab-pane active" id="divMenu' + key + '"><iframe src="' + value + '" width="560" height="350" allowfullscreen="allowFullScreen"></iframe></div>';
+                                                        } else {
+                                                            iframe = iframe + '<div class="tab-pane" id="divMenu' + key + '"><iframe src="' + value + '" width="560" height="350" allowfullscreen="allowFullScreen"></iframe></div>';
+                                                        }
+                                                    });
+                                                    iframe = iframe + '</div></div>';
+                                                    $.createModal({
+                                                        title: doc.folio + ' :: ' + doc.descripcion, //titulo,
+                                                        message: iframe,
+                                                        closeButton: false,
+                                                        scrollable: false
+                                                    });
+                                                }
+                                            }, 1000);
                                         }
                                     });
                                 });
