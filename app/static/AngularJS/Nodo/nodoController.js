@@ -1,4 +1,4 @@
-registrationModule.controller("nodoController", function ($scope, $rootScope, localStorageService, alertFactory, nodoRepository, documentoRepository, alertaRepository, empleadoRepository) {
+registrationModule.controller("nodoController", function ($scope, $rootScope, $location, localStorageService, alertFactory, nodoRepository, documentoRepository, alertaRepository, empleadoRepository) {
 
     //Propiedades
     $scope.isLoading = false;
@@ -132,11 +132,11 @@ registrationModule.controller("nodoController", function ($scope, $rootScope, lo
 
     //Abre una orden padre o hijo
     $scope.VerOrdenPadre = function (exp) {
-        location.href = '/?id=' + exp.folioPadre;
+        location.href = '/?id=' + exp.folioPadre + '&employee=' + $rootScope.currentEmployee + '&perfil=' + $location.search().perfil + '&proceso=' + $rootScope.idProceso;
     };
 
     $scope.VerOrdenHijo = function (exp) {
-        location.href = '/?id=' + exp.folioHijo;
+        location.href = '/?id=' + exp.folioHijo + '&employee=' + $rootScope.currentEmployee + '&perfil=' + $location.search().perfil + '&proceso=' + $rootScope.idProceso;
     };
 
     ////////////////////////////////////////////////////////////////////////////

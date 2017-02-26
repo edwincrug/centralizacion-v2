@@ -229,7 +229,7 @@
                                                         scrollable: false
                                                     });
                                                 }
-                                            }, 1000);
+                                            }, 2000);
                                         }
                                     });
                                 });
@@ -253,7 +253,15 @@
                                         scrollable: false
                                     });
                                 } else {
-                                    $("<h2 class='filesInvoce'>" + d.data.mensajeresultadoField + "</h2>").appendTo('#myModal');
+                                    var iframe = '<div id="hideFullContent"><div ng-controller="documentoController"><h4 class="filesInvoce">'+ d.data.mensajeresultadoField +'</h4></div>  </div>';
+
+                                    //$("" + d.data.mensajeresultadoField + "</h2>").appendTo('#myModal');
+                                    $.createModal({
+                                        title: doc.folio + ' :: ' + doc.descripcion,
+                                        message: iframe,
+                                        closeButton: false,
+                                        scrollable: false
+                                    });
                                 }
                             });
 
