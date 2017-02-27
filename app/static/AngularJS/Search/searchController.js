@@ -366,13 +366,13 @@ registrationModule.controller("searchController", function($scope, $rootScope, $
         if ($rootScope.tipoProceso == 1) {
             $rootScope.estilo = {}
             //Si es una orden de Servicio la navegacion es diferente
-            if ($rootScope.fol_depto == 'SERVICIO' || $rootScope.fol_depto == 'Servicio' && $rootScope.fol_tipofolio == 1) {
+            if ($rootScope.fol_depto == 'SERVICIO' || $rootScope.fol_depto == 'Servicio' || $rootScope.fol_depto == 'Otros Conceptos' || $rootScope.fol_depto == 'OTROS CONCEPTOS' && $rootScope.fol_tipofolio == 1) {
                 //alert('Es Servicio');
                 $rootScope.esServicio = 1;
                 $rootScope.navBusquedaServicio($rootScope.fol_tipofolio, $rootScope.fol_nodoactual, $rootScope.fol_Folio_Operacion, $rootScope.tipoProceso);
             } else {
                 //Si es una Factura de Servicio
-                if ($rootScope.fol_depto == 'SERVICIO' || $rootScope.fol_depto == 'Servicio' && $rootScope.fol_tipofolio == 5) {
+                if ($rootScope.fol_depto == 'SERVICIO' || $rootScope.fol_depto == 'Servicio' || $rootScope.fol_depto == 'Otros Conceptos' || $rootScope.fol_depto == 'OTROS CONCEPTOS' && $rootScope.fol_tipofolio == 5) {
                     //alert('Es una Factura de Servicio');
                     $rootScope.esServicio = 1;
                     $rootScope.CargaEmpleado($rootScope.fol_Folio_Operacion, $rootScope.tipoProceso);
