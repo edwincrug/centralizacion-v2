@@ -565,9 +565,9 @@ registrationModule.controller("nodoController", function ($scope, $rootScope, $l
                         $rootScope.tituloNavegacion = 'Factura: ' + $rootScope.folio;
                         $rootScope.tipoOrdenNav = 'Ordenes Asociadas';
                     } else {
-                        alert('Menor o igual a 6 ');
-                        $rootScope.tituloNavegacion = 'Ordennnnnnnn ';
-                        $rootScope.tipoOrdenNav = 'Facturas asociadasssssss';
+                        //alert('Menor o igual a 6 ');
+                        $rootScope.tituloNavegacion = 'Ordennn ' + $rootScope.folio;
+                        $rootScope.tipoOrdenNav = 'Facturas asociadasss';
                     }
                     break;
             }
@@ -599,8 +599,12 @@ registrationModule.controller("nodoController", function ($scope, $rootScope, $l
                 }, 300);
             } else //Else data.length > 0 
             {
-                if ($rootScope.navegacionBusqueda == 0)
-                    alertFactory.warning('SERVICIO No existen remisiones/facturas para continuar el flujo.');
+                if ($rootScope.navegacionBusqueda == 0){
+                    //alertFactory.warning('SERVICIO No existen remisiones/facturas para continuar el flujo.');
+                    //Navegar O.C sin Facturas asociadas
+                    $rootScope.CargaEmpleado($rootScope.folio, $rootScope.idProceso);
+                }
+
                 else { //Else navegacionBusqueda == 0
                     $rootScope.CargaEmpleado($rootScope.folio,$rootScope.idProceso);
                     $rootScope.navegacionBusqueda = 0;
